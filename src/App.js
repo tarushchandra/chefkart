@@ -17,13 +17,18 @@ function App() {
   }, []);
 
   const handleSort = (col) => {
-    if (toggle) {
-      const sorted = data?.data?.sort((a, b) => {
-        return a[col] < b[col] ? 1 : -1;
+    let sorted;
+    if (!toggle) {
+      sorted = data?.data?.sort((a, b) => {
+        return a[col]?.toLowerCase() > b[col]?.toLowerCase() ? 1 : -1;
       });
-      setData(sorted);
-      setToggle(false);
+    } else {
+      sorted = data?.data?.sort((a, b) => {
+        return a[col]?.toLowerCase() < b[col]?.toLowerCase() ? 1 : -1;
+      });
     }
+    console.log(sorted);
+    setToggle((prev) => !prev);
   };
 
   return (
@@ -32,16 +37,23 @@ function App() {
         <thead>
           <tr>
             {data?.meta?.fields?.map((column, index) => (
-              <th onClick={() => handleSort(column)}>
-                <div className="head">{column}</div>
+              <th key={index} onClick={() => handleSort(column)}>
+                <div className="head">
+                  {column}
+                  {toggle ? (
+                    <i class="fa-solid fa-caret-down"></i>
+                  ) : (
+                    <i class="fa-solid fa-caret-up"></i>
+                  )}
+                </div>
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {data?.data?.map((item) => {
+          {data?.data?.map((item, index) => {
             return (
-              <tr tabIndex="1" className="row">
+              <tr key={index} tabIndex="1" className="row">
                 <IndividualItem item={item} />
               </tr>
             );
